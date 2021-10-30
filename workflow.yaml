@@ -47,14 +47,6 @@ main:
         - calcTimeout:
             assign:
             - timeoutSeconds: ${waitUntil - int(sys.now())}
-        - checkNegativeTimeoutSeconds:
-            switch:
-            - condition: ${timeoutSeconds <= 0}
-              steps:
-                - reportExplicitError:
-                    call: reportErrorSubworkflow
-                - throwExplicitError:
-                    raise: "Explicit error."
         - waitForWorkflow:
             try:
               call: events.await_callback
