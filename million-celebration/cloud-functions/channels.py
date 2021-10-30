@@ -5,7 +5,7 @@ channels = [
             "PL4PDyA42kQIz6SLG-2AuVP79xEpFGLoun", # 歌ってみた / Songs
             "PL4PDyA42kQIxNss1PEt99u76zQtemIgAO", # オリジナル曲
         ],
-        "tag": "#ことね教"
+        "tag": "#天神子兎音"
     },
     {
         "name": "アイちゃん",

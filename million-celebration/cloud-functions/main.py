@@ -1,11 +1,14 @@
-from googleapiclient.discovery import build
-import config
-import pandas as pd
 import datetime
-from google.cloud import bigquery
-from twitter import Twitter, OAuth
+import json
+import os
 import time
+
 import numpy as np
+import pandas as pd
+from google.cloud import bigquery
+from googleapiclient.discovery import build
+from twitter import Twitter, OAuth
+
 import channels as channel_list
 
 # create latest table
@@ -47,37 +50,45 @@ def fetch_info_in_playlist(client, playlist_id, next_page_token=None):
                 playlist_id=playlist_id,
                 next_page_token=next_page_token
             )
-        ], ignore_index=True)
+        ], ignore_index=True) # type: ignore
         return result
 
 def main_upload(_):
-    client_yt = build("youtube", "v3", developerKey=config.YOUTUBE_KEY, cache_discovery=False)
-    client_bq = bigquery.Client(project=config.GCP_PROJECT)
+    client_yt = build("youtube", "v3", developerKey=os.getenv("YOUTUBE_KEY"), cache_discovery=False)
+    client_bq = bigquery.Client()
     yyyymmdd = datetime.date.today().strftime('%Y%m%d')
-    table = f"{config.GCP_PROJECT}.million_celebration.view_count_{yyyymmdd}"
+    table = f"million_celebration.view_count_{yyyymmdd}"
     channels = channel_list.channels
     for c in channels:
         for p in c["playlists"]:
             df = fetch_info_in_playlist(client_yt, p)
-            client_bq.load_table_from_dataframe(df, table)
+            client_bq.load_table_from_dataframe(df, table) # this method does not replace old table
             time.sleep(1)
 
 # tweet celebrate message
 def main_tweet(_):
-    client_bq = bigquery.Client(project=config.GCP_PROJECT)
+    secrets = json.loads(os.getenv("MILLION_CELEBRATION_SECRETS_JSON")) # type: ignore
+    client_bq = bigquery.Client()
     client_tw = Twitter(auth=OAuth(
-        config.M_CELEBRATE_TOKEN,
-        config.M_CELEBRATE_TOKEN_SECRET,
-        config.M_CELEBRATE_CONSUMER_KEY,
-        config.M_CELEBRATE_CONSUMER_SECRET,
+        secrets["TOKEN"],
+        secrets["TOKEN_SECRET"],
+        secrets["CONSUMER_KEY"],
+        secrets["CONSUMER_SECRET"],
     ))
     yyyymmdd_today = datetime.date.today().strftime('%Y%m%d')
     yyyymmdd_yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y%m%d')
-    table_today = f"{config.GCP_PROJECT}.million_celebration.view_count_{yyyymmdd_today}"
-    table_yesterday = f"{config.GCP_PROJECT}.million_celebration.view_count_{yyyymmdd_yesterday}"
+    table_today = f"million_celebration.view_count_{yyyymmdd_today}"
+    table_yesterday = f"million_celebration.view_count_{yyyymmdd_yesterday}"
     query = f"""
         SELECT t.playlist_id, t.video_id
-        FROM {table_today} as t inner join {table_yesterday} as y using(video_id)
+        FROM {table_today} as t
+        INNER JOIN (
+          SELECT
+            video_id,
+            MAX(view_count) AS view_count,
+          FROM {table_yesterday}
+          GROUP BY 1
+        ) as y using(video_id)
         WHERE y.view_count < 1000000 and 1000000 <= t.view_count
     """
     query_job = client_bq.query(query)
@@ -85,8 +96,8 @@ def main_tweet(_):
     channels = channel_list.channels
     for c in channels:
         df_each = df.query(f"playlist_id in {c['playlists']}")
-        videos = np.unique(df_each["video_id"].values)
-        if videos.shape[0] == 0: continue
+        videos = np.unique(df_each["video_id"].values) # type: ignore
+        if videos.shape[0] == 0: continue # type: ignore
         message_head = f"{c['name']}100万再生おめでとう！\n"
         message_body = "".join([f"https://www.youtube.com/watch?v={x}\n" for x in videos])
         message_tag = c["tag"]
