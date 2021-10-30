@@ -1,4 +1,4 @@
-# Dploy
+# Deploy
 ## サービスアカウント
 daily-batchという名称のサービスアカウントを作成する。必要な権限は以下。
 
@@ -24,9 +24,10 @@ Cloud Functionsに権限を付与しておく（[参考](https://cloud.google.co
 * LINE\_TOKEN\_SANDBOX
 
 ## Cloud Build
-以下の権限を不要。
+以下の権限を付与。
 
 * Cloud Functions Developer
 * Workflows Editor
+* Service Account User
 
 `_REGION`変数を設定しておく（`us-west1`や`us-east1`など）。
