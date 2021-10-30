@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 cd $(dirname $0)
 export project=$(gcloud config get-value project)
 
@@ -7,4 +8,4 @@ for x in *; do
     ./${x}/deploy.sh
   fi
 done
-gcloud workflows deploy daily-batch --source=workflow.yaml --service-account=daily-batch@${project}.iam.gserviceaccount.com
+gcloud workflows deploy daily-batch --source=workflow.yaml --service-account=daily-batch@${project}.iam.gserviceaccount.com --location=${REGION}
