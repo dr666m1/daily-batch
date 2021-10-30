@@ -1,0 +1,83 @@
+main:
+  steps:
+  - before:
+      assign:
+      - project: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+      - region: ${sys.get_env("GOOGLE_CLOUD_LOCATION")}
+  # morningAIBot
+  - createMorningAIBotCallback:
+      call: events.create_callback_endpoint
+      args:
+        http_callback_method: "GET"
+      result: morningAIBotCallbackDetails
+  - morningAIBot:
+      call: http.post
+      args:
+        url: ${"https://workflowexecutions.googleapis.com/v1/projects/" + project + "/locations/" + region + "/workflows/morning-ai-bot/executions"}
+        auth:
+          type: OAuth2
+        body:
+          argument: ${json.encode_to_string(morningAIBotCallbackDetails)}
+  # millionCelebration
+  - createMillionCelebrationCallback:
+      call: events.create_callback_endpoint
+      args:
+        http_callback_method: "GET"
+      result: millionCelebrationCallbackDetails
+  - millionCelebration:
+      call: http.post
+      args:
+        url: ${"https://workflowexecutions.googleapis.com/v1/projects/" + project + "/locations/" + region + "/workflows/million-celebration/executions"}
+        auth:
+          type: OAuth2
+        body:
+          argument: ${json.encode_to_string(millionCelebrationCallbackDetails)}
+  # waitForAllWorkFlows
+  - assignCallbacks:
+      assign:
+      - callbackDetails:
+        - ${morningAIBotCallbackDetails}
+        - ${millionCelebrationCallbackDetails}
+      - waitUntil: ${int(sys.now()) + 60 * 60 * 12}
+  - waitForAllWorkflows:
+      for:
+        value: c
+        in: ${callbackDetails}
+        steps:
+        - calcTimeout:
+            assign:
+            - timeoutSeconds: ${waitUntil - int(sys.now())}
+        - checkNegativeTimeoutSeconds:
+            switch:
+            - condition: ${timeoutSeconds <= 0}
+              steps:
+                - reportExplicitError:
+                    call: reportErrorSubworkflow
+                - throwExplicitError:
+                    raise: "Explicit error."
+        - waitForWorkflow:
+            try:
+              call: events.await_callback
+              args:
+                callback: ${c}
+                timeout: ${timeoutSeconds}
+            except:
+              as: e
+              steps:
+              - reportError:
+                  call: reportErrorSubworkflow
+                  args:
+                    msg: ${json.encode_to_string(e)}
+              - throwError:
+                  raise: ${e}
+      next: end
+
+reportErrorSubworkflow:
+  params: [msg: "Something went wrong."]
+  steps:
+  # TODO send error message to LINE or Slack
+  - logError:
+      call: sys.log
+      args:
+        text: ${msg}
+
