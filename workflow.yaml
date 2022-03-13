@@ -4,20 +4,6 @@ main:
       assign:
       - project: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
       - region: ${sys.get_env("GOOGLE_CLOUD_LOCATION")}
-  # morningAIBot
-  - createMorningAIBotCallback:
-      call: events.create_callback_endpoint
-      args:
-        http_callback_method: "GET"
-      result: morningAIBotCallbackDetails
-  - morningAIBot:
-      call: http.post
-      args:
-        url: ${"https://workflowexecutions.googleapis.com/v1/projects/" + project + "/locations/" + region + "/workflows/morning-ai-bot/executions"}
-        auth:
-          type: OAuth2
-        body:
-          argument: ${json.encode_to_string(morningAIBotCallbackDetails)}
   # millionCelebration
   - createMillionCelebrationCallback:
       call: events.create_callback_endpoint
@@ -36,7 +22,6 @@ main:
   - assignCallbacks:
       assign:
       - callbackDetails:
-        - ${morningAIBotCallbackDetails}
         - ${millionCelebrationCallbackDetails}
       - waitUntil: ${int(sys.now()) + 60 * 60 * 12}
   - waitForAllWorkflows:

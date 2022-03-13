@@ -20,7 +20,6 @@ Cloud Functionsに権限を付与しておく（[参考](https://cloud.google.co
   * CONSUMER\_SECRET
   * TOKEN
   * TOKEN\_SECRET
-* MORNING\_AI\_BOT\_TOKEN
 * LINE\_TOKEN\_SANDBOX
 
 ## Cloud Build
