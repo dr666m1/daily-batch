@@ -1,6 +1,7 @@
 # Deploy
 ## サービスアカウント
-daily-batchという名称のサービスアカウントを作成する。必要な権限は以下。
+daily-batchという名称のサービスアカウントを作成する。
+必要な権限は以下。
 
 * Logs Writer
 * Cloud Functions Invoker
@@ -29,4 +30,14 @@ Cloud Functionsに権限を付与しておく（[参考](https://cloud.google.co
 * Workflows Editor
 * Service Account User
 
-`_REGION`変数を設定しておく（`us-west1`や`us-east1`など）。
+あとはGitHub連携すればpush時に自動でdeployされる。
+その際、`_REGION`変数を設定しておく（`us-west1`や`us-east1`など）こと。
+
+## .envrc
+手動でdeployする場合は以下のように環境変数を設定して`deploy.sh`を実行。
+
+```bash
+# .envrc
+export PROJECT=xxxxx
+export REGION=yyyyy
+```

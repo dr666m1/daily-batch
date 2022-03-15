@@ -12,14 +12,9 @@ YouTubeのAPI経由で動画の再生回数を取得し、100万再生達成を�
 # channels
 channels = [
     {
-        "name": "子兎音様",
-        "playlists": ["PL4PDyA42kQIz6SLG-2AuVP79xEpFGLoun", "PL4PDyA42kQIxNss1PEt99u76zQtemIgAO"],
-        "tag": "#天神子兎音"
-    },
-    {
-        "name": "アイちゃん",
-        "playlists": ["PL0bHKk6wuUGIAmzzqdVMynRrAOi8odYFQ", "PL0bHKk6wuUGLWGipKSf0dFrpuzDitERqD"],
-        "tag": "#KizunaAI #KizunaAIMusic"
+        "name": "xxxxx",
+        "playlists": ["PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
+        "tag": "#xxxxx"
     }
 ]
 ```
@@ -32,3 +27,17 @@ Twitterで投稿する際の表記。敬称も忘れずに。
 
 ### tag
 Twitterで投稿する際のハッシュタグ。複数付ける場合は半角スペースで区切る。
+
+## テーブル定義
+```sql
+CREATE SCHEMA IF NOT EXISTS million_celebration;
+CREATE TABLE IF NOT EXISTS million_celebration.view_count (
+  playlist_id string,
+  video_id string,
+  view_count int64
+)
+PARTITION BY _PARTITIONDATE
+OPTIONS (
+  partition_expiration_days=30
+);
+```

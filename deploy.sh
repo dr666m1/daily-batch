@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 cd $(dirname $0)
-export project=$(gcloud config get-value project)
+export PROJECT=$(gcloud config get-value project)
 
 for x in *; do
   if [ -d "$x" ] && [ -x "${x}/deploy.sh" ]; then
