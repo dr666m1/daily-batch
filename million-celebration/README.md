@@ -7,7 +7,7 @@ YouTubeのAPI経由で動画の再生回数を取得し、100万再生達成を�
 ## 設定
 `./functions/channels.go`がYouTubeの検索条件を決めるファイル（Gitの管理外とした）。
 
-```
+```go
 package celebrate
 
 type channel struct {
@@ -25,7 +25,6 @@ var channels = []channel{
 		tags: []string{"xxxxx"},
 	},
 }
-
 ```
 
 ### name
