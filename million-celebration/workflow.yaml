@@ -50,7 +50,7 @@ main:
   - millionCelebrationLoadWIP:
       try:
         steps:
-        - upload:
+        - load:
             call: http.get
             args:
               url: ${"https://" + region + "-" + project + ".cloudfunctions.net/million-celebration-load"}

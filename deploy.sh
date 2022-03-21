@@ -8,4 +8,4 @@ for x in *; do
     ./${x}/deploy.sh
   fi
 done
-gcloud workflows deploy daily-batch --source=workflow.yaml --service-account=daily-batch@${project}.iam.gserviceaccount.com --location=${REGION}
+gcloud workflows deploy daily-batch --source=workflow.yaml --service-account=daily-batch@${PROJECT}.iam.gserviceaccount.com --location=${REGION}

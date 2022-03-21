@@ -5,7 +5,7 @@ gcloud workflows deploy million-celebration --source=workflow.yaml --service-acc
 
 cd ./functions
 gcloud functions deploy million-celebration-load \
-  --entry-point=MillionCelebrationLoad \
+  --entry-point=Load \
   --runtime go116 --trigger-http --memory 2048MB --timeout 500s --region ${REGION} \
   --set-secrets YOUTUBE_KEY=YOUTUBE_KEY:latest,MILLION_CELEBRATION_SECRETS_JSON=MILLION_CELEBRATION_SECRETS_JSON:latest \
   --set-env-vars PROJECT=${PROJECT},ENV=production
