@@ -41,14 +41,20 @@ PARTITION BY dt
 OPTIONS (
   partition_expiration_days = 30
 );
-CREATE TABLE IF NOT EXISTS million_celebration.view_count_dev (
+CREATE OR REPLACE TABLE million_celebration.view_count_dev (
   dt DATE,
   playlist_id string,
   video_id string,
   view_count int64
 )
-PARTITION BY dt
-OPTIONS (
-  partition_expiration_days = 3
-);
+PARTITION BY dt;
+INSERT million_celebration.view_count_dev VALUES
+  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 99),
+  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
+  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
+  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'c', 99),
+  (DATE '2000-01-02', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
+  (DATE '2000-01-02', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
+  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'd', 200)
+;
 ```

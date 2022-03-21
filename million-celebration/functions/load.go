@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"cloud.google.com/go/bigquery"
+	"github.com/dr666m1/daily-batch/million-celebration/date"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
 )
@@ -115,13 +115,7 @@ func Load(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var rows []Row
-	location, err := time.LoadLocation("Asia/Tokyo")
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-	dt := (time.Now().In(location)).Format("2006-01-02")
+	dt := date.Today()
 	for _, pl := range playlists {
 		var nextPageToken string
 		var videoIds []string

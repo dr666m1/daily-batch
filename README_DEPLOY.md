@@ -42,4 +42,5 @@ Cloud Functionsに権限を付与しておく（[参考](https://cloud.google.co
 export PROJECT=xxxxx
 export REGION=yyyyy
 export YOUTUBE_KEY=zzzzz
+export MILLION_CELEBRATION_SECRETS_JSON='{"CONSUMER_KEY": "aaaaa", "CONSUMER_SECRET": "bbbbb", "TOKEN": "ccccc", "TOKEN_SECRET": "ddddd"}'
 ```
