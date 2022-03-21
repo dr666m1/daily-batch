@@ -17,7 +17,7 @@ func Test_callPlaylistItems(t *testing.T) {
 	}
 	videos, token, err := callPlaylistItems(
 		client,
-		"PL0bHKk6wuUGIAmzzqdVMynRrAOi8odYFQ", // アイちゃん：歌ってみた・踊ってみた
+		"PL0bHKk6wuUGIAmzzqdVMynRrAOi8odYFQ",
 		"",
 	)
 	if err != nil {

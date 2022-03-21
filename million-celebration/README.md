@@ -4,19 +4,28 @@
 YouTubeのAPI経由で動画の再生回数を取得し、100万再生達成を検知したら自動でお祝いするbot。
 あくまで自分のためのbotなので、誰かに使ってもらうための`README.md`にはなっていない。
 
-
 ## 設定
-`./functions/channel_list.py`がYouTubeの検索条件を決めるファイル。書き換えたら`./functions/deploy.sh`を実行して反映すること。
+`./functions/channels.go`がYouTubeの検索条件を決めるファイル（Gitの管理外とした）。
 
 ```
-# channels
-channels = [
-    {
-        "name": "xxxxx",
-        "playlists": ["PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
-        "tag": "#xxxxx"
-    }
-]
+package celebrate
+
+type channel struct {
+	name      string
+	playlists []string
+	tags      []string
+}
+
+var channels = []channel{
+	{
+		name: "xxxxx",
+		playlists: []string{
+			"PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+		},
+		tags: []string{"xxxxx"},
+	},
+}
+
 ```
 
 ### name
@@ -25,8 +34,8 @@ Twitterで投稿する際の表記。敬称も忘れずに。
 ### playlists
 再生リストのURLに`list=xxx`の形式で含まれるもの。複数指定する場合、重複があっても問題ない。
 
-### tag
-Twitterで投稿する際のハッシュタグ。複数付ける場合は半角スペースで区切る。
+### tags
+Twitterで投稿する際のハッシュタグ。`#`は不要。
 
 ## テーブル定義
 ```sql
