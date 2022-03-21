@@ -47,6 +47,22 @@ main:
         url: ${args.url}
         auth:
           type: OAuth2
+  - millionCelebrationLoadWIP:
+      try:
+        steps:
+        - upload:
+            call: http.get
+            args:
+              url: ${"https://" + region + "-" + project + ".cloudfunctions.net/million-celebration-load"}
+              auth:
+                type: OIDC
+      retry:
+        predicate: ${retryPredicate}
+        max_retries: 2
+        backoff:
+          initial_delay: ${60 * 10}
+          max_delay: ${60 * 30}
+          multiplier: 2
 
 retryPredicate:
   params: [e]

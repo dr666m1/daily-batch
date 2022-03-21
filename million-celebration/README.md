@@ -32,12 +32,23 @@ Twitterで投稿する際のハッシュタグ。複数付ける場合は半角�
 ```sql
 CREATE SCHEMA IF NOT EXISTS million_celebration;
 CREATE TABLE IF NOT EXISTS million_celebration.view_count (
+  dt DATE,
   playlist_id string,
   video_id string,
   view_count int64
 )
-PARTITION BY _PARTITIONDATE
+PARTITION BY dt
 OPTIONS (
-  partition_expiration_days=30
+  partition_expiration_days = 30
+);
+CREATE TABLE IF NOT EXISTS million_celebration.view_count_dev (
+  dt DATE,
+  playlist_id string,
+  video_id string,
+  view_count int64
+)
+PARTITION BY dt
+OPTIONS (
+  partition_expiration_days = 3
 );
 ```

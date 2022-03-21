@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 cd $(dirname $0)
 export PROJECT=$(gcloud config get-value project)
 

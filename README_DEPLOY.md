@@ -34,10 +34,12 @@ Cloud Functionsに権限を付与しておく（[参考](https://cloud.google.co
 その際、`_REGION`変数を設定しておく（`us-west1`や`us-east1`など）こと。
 
 ## .envrc
-手動でdeployする場合は以下のように環境変数を設定して`deploy.sh`を実行。
+手動でdeployする場合は、まず以下のように環境変数を設定する。
+必要に応じてテストをし、その後`deploy.sh`を実行。
 
 ```bash
 # .envrc
 export PROJECT=xxxxx
 export REGION=yyyyy
+export YOUTUBE_KEY=zzzzz
 ```
