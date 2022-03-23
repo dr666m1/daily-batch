@@ -62,12 +62,12 @@ OPTIONS (
   partition_expiration_days = NULL
 );
 INSERT million_celebration.view_count_dev VALUES
-  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 99),
-  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
-  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
-  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'c', 99),
-  (DATE '2000-01-02', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
-  (DATE '2000-01-02', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
-  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'd', 200)
+  (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 99),
+  (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
+  (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
+  (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'c', 99),
+  (DATE '2000-01-02', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
+  (DATE '2000-01-02', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
+  (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'd', 200)
 ;
 ```

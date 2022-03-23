@@ -9,6 +9,16 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func Test_createMessage(t *testing.T) {
+	expected := `xxxxxちゃん100万再生おめでとう！
+https://www.youtube.com/watch?v=yyyyy
+#aaaaa #bbbbb`
+	actual := createMessage("xxxxxちゃん", 100, "yyyyy", []string{"aaaaa", "bbbbb"})
+	if diff := cmp.Diff(expected, actual); diff != "" {
+		t.Error(diff)
+	}
+}
+
 func Test_newClient(t *testing.T) {
 	client, err := newClient()
 	if err != nil {
@@ -27,16 +37,16 @@ func Test_queryApplicableVideos(t *testing.T) {
 	data := []struct {
 		name      string
 		threshold int
-		expected  []PlaylistVideoId
+		expected  []ChannelVideoId
 	}{
-		{"100", 100, []PlaylistVideoId{
-			{"PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "a"},
+		{"100", 100, []ChannelVideoId{
+			{"xxxxx", "a"},
 		}},
 		{"200", 200, nil},
 	}
 	for _, d := range data {
 		t.Run(d.name, func(t *testing.T) {
-			rows, err := queryPlaylistVideoIds(client, "2000-01-02", d.threshold)
+			rows, err := queryChannelVideoIds(client, "2000-01-02", d.threshold)
 			if err != nil {
 				t.Error(err.Error())
 			}
