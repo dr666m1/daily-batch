@@ -14,6 +14,7 @@ import (
 
 type Row struct {
 	Dt         string `bigquery:"dt"`
+	channelId  string `bigquery:"id"`
 	PlaylistId string `bigquery:"playlist_id"`
 	VideoId    string `bigquery:"video_id"`
 	ViewCount  int    `bigquery:"view_count"`
@@ -73,13 +74,13 @@ func callVideos(client *youtube.Service, videoIds []string, batchSize int) ([]vi
 
 func insertRows(rows []Row) error {
 	ctx := context.Background()
-	client, err := bigquery.NewClient(ctx, os.Getenv("PROJECT"))
+	bqClient, err := bigquery.NewClient(ctx, os.Getenv("PROJECT"))
 	if err != nil {
 		return err
 	}
-	defer client.Close()
+	defer bqClient.Close()
 
-	dataset := client.Dataset("million_celebration")
+	dataset := bqClient.Dataset("million_celebration")
 	table := dataset.Table("view_count_dev")
 	if env := os.Getenv("ENV"); env == "production" {
 		table = dataset.Table("view_count")
@@ -99,47 +100,42 @@ func min(a, b int) int {
 }
 
 func Load(w http.ResponseWriter, r *http.Request) {
-	var playlists []string
-	for _, c := range channels {
-		for _, pl := range c.playlists {
-			playlists = append(playlists, pl)
-		}
-	}
-
-	youtubeCtx := context.Background()
-	youtubeClient, err := youtube.NewService(youtubeCtx, option.WithAPIKey(os.Getenv("YOUTUBE_KEY")))
+	ctx := context.Background()
+	youtubeClient, err := youtube.NewService(ctx, option.WithAPIKey(os.Getenv("YOUTUBE_KEY")))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	var rows []Row
 	dt := date.Today()
-	for _, pl := range playlists {
-		var nextPageToken string
-		var videoIds []string
-		for {
-			ids, token, err := callPlaylistItems(youtubeClient, pl, nextPageToken)
+	var rows []Row
+	for _, c := range channels {
+		for _, pl := range c.playlists {
+			var nextPageToken string
+			var videoIds []string
+			for {
+				ids, token, err := callPlaylistItems(youtubeClient, pl, nextPageToken)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					w.Write([]byte(err.Error()))
+					return
+				}
+				videoIds = append(videoIds, ids...)
+				if token == "" {
+					break
+				}
+				nextPageToken = token
+			}
+			videos, err := callVideos(youtubeClient, videoIds, 50)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(err.Error()))
 				return
 			}
-			videoIds = append(videoIds, ids...)
-			if token == "" {
-				break
+			for _, v := range videos {
+				rows = append(rows, Row{dt, c.channelId, pl, v.videoId, v.viewCount})
 			}
-			nextPageToken = token
-		}
-		videos, err := callVideos(youtubeClient, videoIds, 50)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-		for _, v := range videos {
-			rows = append(rows, Row{dt, pl, v.videoId, v.viewCount})
 		}
 	}
 

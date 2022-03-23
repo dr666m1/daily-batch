@@ -11,6 +11,7 @@ YouTubeのAPI経由で動画の再生回数を取得し、100万再生達成を�
 package celebrate
 
 type channel struct {
+	channelId string
 	name      string
 	playlists []string
 	tags      []string
@@ -18,6 +19,7 @@ type channel struct {
 
 var channels = []channel{
 	{
+		id: "xxxxx",
 		name: "xxxxx",
 		playlists: []string{
 			"PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
@@ -26,6 +28,10 @@ var channels = []channel{
 	},
 }
 ```
+
+### id
+`https://www.youtube.com/channel/xxxxx`の末尾。
+一意になる識別子がほしいだけだから本当は何でもいい。
 
 ### name
 Twitterで投稿する際の表記。敬称も忘れずに。
@@ -41,6 +47,7 @@ Twitterで投稿する際のハッシュタグ。`#`は不要。
 CREATE SCHEMA IF NOT EXISTS million_celebration;
 CREATE TABLE IF NOT EXISTS million_celebration.view_count (
   dt DATE,
+  channel_id string,
   playlist_id string,
   video_id string,
   view_count int64
@@ -49,20 +56,18 @@ PARTITION BY dt
 OPTIONS (
   partition_expiration_days = 30
 );
-CREATE OR REPLACE TABLE million_celebration.view_count_dev (
-  dt DATE,
-  playlist_id string,
-  video_id string,
-  view_count int64
-)
-PARTITION BY dt;
+CREATE OR REPLACE TABLE million_celebration.view_count_dev
+LIKE million_celebration.view_count
+OPTIONS (
+  partition_expiration_days = NULL
+);
 INSERT million_celebration.view_count_dev VALUES
-  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 99),
-  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
-  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
-  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'c', 99),
-  (DATE '2000-01-02', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
-  (DATE '2000-01-02', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
-  (DATE '2000-01-01', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'd', 200)
+  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 99),
+  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
+  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
+  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'c', 99),
+  (DATE '2000-01-02', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
+  (DATE '2000-01-02', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),
+  (DATE '2000-01-01', 'xxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'd', 200)
 ;
 ```
