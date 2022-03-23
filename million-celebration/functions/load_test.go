@@ -3,6 +3,7 @@ package celebrate
 import (
 	"context"
 	"os"
+	"os/exec"
 	"testing"
 
 	"google.golang.org/api/option"
@@ -69,9 +70,13 @@ func Test_insertRows(t *testing.T) {
 		rows  []Row
 		valid bool
 	}{
-		{"valid", []Row{{"2020-01-01", "playlist_id", "video_id", 1}}, true},
-		{"invalid", []Row{{"abc", "playlist_id", "video_id", 1}}, false},
+		{"valid", []Row{{"2020-01-01", "Test_insertRows", "playlist_id", "video_id", 1}}, true},
+		{"invalid", []Row{{"abc", "Test_insertRows", "playlist_id", "video_id", 1}}, false},
 	}
+	t.Cleanup(func() {
+		cmd := exec.Command("bq", "query", `DELETE million_celebration.view_count_dev WHERE channel_id = 'Test_insertRows'`)
+		cmd.Run()
+	})
 	for _, d := range data {
 		t.Run(d.name, func(t *testing.T) {
 			err := insertRows(d.rows)
