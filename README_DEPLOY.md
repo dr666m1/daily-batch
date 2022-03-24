@@ -3,8 +3,9 @@
 daily-batchという名称のサービスアカウントを作成する。
 必要な権限は以下。
 
-* Logs Writer
 * Cloud Functions Invoker
+* Logs Writer
+* Secret Manager Secret Accessor
 * Workflows Invoker
 
 ## Cloud Scheduler
