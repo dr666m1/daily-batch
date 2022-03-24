@@ -14,7 +14,7 @@ import (
 
 type Row struct {
 	Dt         string `bigquery:"dt"`
-	channelId  string `bigquery:"id"`
+	channelId  string `bigquery:"channel_id"`
 	PlaylistId string `bigquery:"playlist_id"`
 	VideoId    string `bigquery:"video_id"`
 	ViewCount  int    `bigquery:"view_count"`
