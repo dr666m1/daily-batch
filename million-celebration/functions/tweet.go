@@ -149,4 +149,7 @@ func Tweet(w http.ResponseWriter, r *http.Request) {
 			twitterClient.Statuses.Update(msg, nil)
 		}
 	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("done!"))
 }
