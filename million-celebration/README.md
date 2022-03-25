@@ -45,7 +45,7 @@ Twitterで投稿する際のハッシュタグ。`#`は不要。
 ## テーブル定義
 ```sql
 CREATE SCHEMA IF NOT EXISTS million_celebration;
-CREATE TABLE IF NOT EXISTS million_celebration.view_count (
+CREATE TABLE IF NOT EXISTS million_celebration.daily_view_count (
   dt DATE,
   channel_id string,
   playlist_id string,
@@ -56,12 +56,12 @@ PARTITION BY dt
 OPTIONS (
   partition_expiration_days = 30
 );
-CREATE OR REPLACE TABLE million_celebration.view_count_dev
-LIKE million_celebration.view_count
+CREATE OR REPLACE TABLE million_celebration.daily_view_count_dev
+LIKE million_celebration.daily_view_count
 OPTIONS (
   partition_expiration_days = NULL
 );
-INSERT million_celebration.view_count_dev VALUES
+INSERT million_celebration.daily_view_count_dev VALUES
   (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 99),
   (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'a', 100),
   (DATE '2000-01-01', 'xxxxx', 'PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'b', 99),

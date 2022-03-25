@@ -14,7 +14,7 @@ import (
 
 type Row struct {
 	Dt         string `bigquery:"dt"`
-	channelId  string `bigquery:"channel_id"`
+	ChannelId  string `bigquery:"channel_id"`
 	PlaylistId string `bigquery:"playlist_id"`
 	VideoId    string `bigquery:"video_id"`
 	ViewCount  int    `bigquery:"view_count"`
@@ -81,9 +81,9 @@ func insertRows(rows []Row) error {
 	defer bqClient.Close()
 
 	dataset := bqClient.Dataset("million_celebration")
-	table := dataset.Table("view_count_dev")
+	table := dataset.Table(developTable)
 	if env := os.Getenv("ENV"); env == "production" {
-		table = dataset.Table("view_count")
+		table = dataset.Table(productionTable)
 	}
 	inserter := table.Inserter()
 	if err := inserter.Put(ctx, rows); err != nil {

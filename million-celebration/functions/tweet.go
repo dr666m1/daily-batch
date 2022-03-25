@@ -81,9 +81,9 @@ WHERE
   AND %v <= view_count_today
 ORDER BY 1, 2
 `
-	table := "view_count_dev"
+	table := developTable
 	if os.Getenv("ENV") == "production" {
-		table = "view_count"
+		table = productionTable
 	}
 
 	q := client.Query(fmt.Sprintf(query, table, date.OneDayBefore(today), table, today, threshold, threshold))
